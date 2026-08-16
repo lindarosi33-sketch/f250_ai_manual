@@ -2,6 +2,10 @@
 
 A Flask web application that provides a full-text search interface across 1995 Ford F-250/F-350 powertrain, body/chassis, and 7.3L Power Stroke diesel service manuals. Built as a human-AI collaboration demo between Rosco (@HephzibahForge) and DeepSeek AI.
 
+## Live Demo
+
+**[https://ai.hephzibahforge.com](https://ai.hephzibahforge.com)** — Search the manuals in the deployed application. (The copyrighted Ford manual data is hosted on the live server; the GitHub repository contains code only.)
+
 ## Features
 
 - **Full-text search** with weighted scoring across all manual pages
