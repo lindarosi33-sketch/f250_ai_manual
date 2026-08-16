@@ -5,7 +5,9 @@ Human-AI Collaboration Demo: Rosco @ HephzibahForge + DeepSeek AI
 """
 import json
 import os
-from flask import Flask, request, render_template, escape
+import logging
+from flask import Flask, request, render_template, escape, send_from_directory, abort
+from werkzeug.utils import secure_filename
 
 # Use the existing search class
 import sys
@@ -86,9 +88,12 @@ def search_results():
 
 @app.route('/serve_pdf/<path:filename>')
 def serve_pdf(filename):
-    """Serve PDF files directly."""
-    from flask import send_from_directory
-    return send_from_directory(PDF_DIR, filename)
+    """Serve PDF files directly with path-traversal protection."""
+    safe_name = secure_filename(filename)
+    if not safe_name or safe_name != filename:
+        logging.warning(f"Blocked path traversal attempt: {filename}")
+        abort(404)
+    return send_from_directory(PDF_DIR, safe_name)
 
 
 @app.route('/view_pdf/<path:filename>/<int:page>')
