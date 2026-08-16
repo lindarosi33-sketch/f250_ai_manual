@@ -5,7 +5,7 @@ Human-AI Collaboration Demo: Rosco @ HephzibahForge + DeepSeek AI
 """
 import json
 import os
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, escape
 
 # Use the existing search class
 import sys
@@ -22,6 +22,29 @@ app = Flask(__name__,
             template_folder=TEMPLATE_DIR,
             static_folder=STATIC_DIR)
 search_engine = FixedSearch()
+
+
+@app.after_request
+def add_security_headers(response):
+    """Add security headers to every response (defense in depth)."""
+    # Content Security Policy - restrict sources to self + pinned CDNs.
+    # 'unsafe-inline' is required by the existing inline <script>/onerror handlers;
+    # query output is already sanitized+escaped by search_engine and Jinja.
+    response.headers.setdefault('Content-Security-Policy',
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; "
+        "img-src 'self' data: https://www.deepseek.com; "
+        "font-src 'self' data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; "
+        "object-src 'none'; "
+        "base-uri 'self'; "
+        "frame-ancestors 'none'; "
+        "form-action 'self'")
+    response.headers.setdefault('X-Content-Type-Options', 'nosniff')
+    response.headers.setdefault('X-Frame-Options', 'DENY')
+    response.headers.setdefault('Referrer-Policy', 'no-referrer')
+    response.headers.setdefault('X-XSS-Protection', '0')
+    return response
 
 
 @app.route('/')
@@ -76,11 +99,12 @@ def view_pdf(filename, page):
     encoded_filename = urllib.parse.quote(filename)
     # Create URL with page anchor (browser PDF viewer should handle #page=N)
     pdf_url = f"/serve_pdf/{encoded_filename}#page={page}"
+    escaped_url = escape(pdf_url)
     return f'''
     <html>
-    <head><meta http-equiv="refresh" content="0; url={pdf_url}"></head>
+    <head><meta http-equiv="refresh" content="0; url={escaped_url}"></head>
     <body>
-        <p>Opening PDF... If not redirected, <a href="{pdf_url}">click here</a>.</p>
+        <p>Opening PDF... If not redirected, <a href="{escaped_url}">click here</a>.</p>
     </body>
     </html>
     '''
