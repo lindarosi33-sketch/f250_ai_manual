@@ -1,0 +1,52 @@
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+venv/
+venv.old/
+env/
+ENV/
+.venv
+
+# Backup files
+*.backup
+*.bak
+*.old
+*.un~
+*~
+
+# IDE and system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Security and logs
+SECURITY_README.md
+check_security_status.sh
+scripts/security_monitor.sh
+*.log
+
+# Large manuals (PDFs and other docs)
+data/manuals/
+*.pdf
+*.docx
+
+# Your own backup folders
+f250_ai_manual.backup*
+
+
+SECURITY_README.md
+check_security_status.sh
+f250_ai_manual.backup01-09-23:21
+scripts
+test_static.py
+scripts/security_monitor.sh
+data/manuals
+*.pdf
+*.pdf
